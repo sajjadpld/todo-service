@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./../api
+      dockerfile: Dockerfile
+      tags:
+        - "microservice-api:latest"
+    container_name: microservice-api
+    restart: on-failure
+    environment:
+      - DB_DATABASE=microservice
+      - DB_DEBUG=false
+      - DB_HOST=database
+      - DB_MAX_IDLE_CONNECTIONS=5
+      - DB_MAX_LIFETIME_SECONDS=10
+      - DB_MAX_OPEN_CONNECTIONS=10
+      - DB_PASSWORD=secret
+      - DB_PORT=5432
+      - DB_SLOW_SQL_THRESHOLD=5
+      - DB_SSL=disable
+      - DB_USERNAME=nex
+      - SWAGGER_HOST=localhost:8080
+    volumes:
+      - ./api-logs:/app/logs
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - backend

@@ -1,0 +1,8 @@
+name: "microservice"
+
+include:
+  - docker/app.yml
+  - docker/database.yml
+
+networks:
+  backend:

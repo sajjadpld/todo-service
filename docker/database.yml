@@ -1,0 +1,15 @@
+services:
+  database:
+    image: 'postgres:latest'
+    container_name: microservice-db
+    restart: always
+    environment:
+      POSTGRES_USER: "nex"
+      POSTGRES_PASSWORD: "secret"
+      POSTGRES_DB: "microservice"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - backend

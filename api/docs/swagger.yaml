@@ -1,0 +1,287 @@
+definitions:
+  dto.CreateRequest:
+    properties:
+      description:
+        example: Create new todo item
+        type: string
+      dueDate:
+        example: "2025-08-07 10:11:12"
+        type: string
+    required:
+    - description
+    - dueDate
+    type: object
+  dto.CreateResponse:
+    properties:
+      description:
+        example: Create new todo item
+        type: string
+      dueDate:
+        example: "2025-08-07 10:11:12"
+        type: string
+      uuid:
+        example: e48c48a3-cb72-4d64-b035-5c30fc900ef6
+        type: string
+    type: object
+  dto.DetailResponse:
+    properties:
+      description:
+        example: Create new todo item
+        type: string
+      dueDate:
+        example: "2025-08-07 10:11:12"
+        type: string
+      uuid:
+        example: e48c48a3-cb72-4d64-b035-5c30fc900ef6
+        type: string
+    type: object
+  dto.TodoListItemDetail:
+    properties:
+      dueDate:
+        example: "2025-08-07 10:11:12"
+        type: string
+      id:
+        example: 02bda2f0-61e5-483c-a2d8-15eafb00b945
+        type: string
+      name:
+        example: Create new todo...
+        type: string
+    required:
+    - dueDate
+    type: object
+  dto.TodoListResponse:
+    properties:
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      pages:
+        example: 3
+        type: integer
+      todos:
+        items:
+          $ref: '#/definitions/dto.TodoListItemDetail'
+        type: array
+      total:
+        example: 27
+        type: integer
+    type: object
+  meta.Response:
+    properties:
+      data: {}
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  routes.response:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/todo/{uuid}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Todo UUID
+        example: f81eee2d-2cca-4169-8062-7404a78d5c3b
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                ' error':
+                  type: object
+                data:
+                  $ref: '#/definitions/dto.DetailResponse'
+              type: object
+        "400":
+          description: process failure
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "404":
+          description: not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "422":
+          description: invalid data types
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Get Todo Details
+      tags:
+      - Todo
+  /api/v1/todo/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: necessary fields for request
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: success response
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                ' error':
+                  type: object
+                data:
+                  $ref: '#/definitions/dto.CreateResponse'
+              type: object
+        "400":
+          description: process failure
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "404":
+          description: not found
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "409":
+          description: already exists
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "422":
+          description: unprocessable
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Create New Todo
+      tags:
+      - Todo
+  /api/v1/todo/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Page Number
+        in: query
+        name: page
+        type: integer
+      - description: Page Limit
+        in: query
+        name: limit
+        type: integer
+      - description: '`id` `description` `created_at` `updated_at`'
+        in: query
+        name: sort
+        type: string
+      - description: '`asc` or `desc`'
+        in: query
+        name: order
+        type: string
+      - description: Search the Description
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                ' error':
+                  type: object
+                data:
+                  $ref: '#/definitions/dto.TodoListResponse'
+              type: object
+        "400":
+          description: process failure
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+        "422":
+          description: database error while retrieving
+          schema:
+            allOf:
+            - $ref: '#/definitions/meta.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Get Todos List
+      tags:
+      - Todo
+  /handshake:
+    get:
+      consumes:
+      - application/json
+      description: Checks the Service Availability
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.response'
+      summary: Service Handshake
+      tags:
+      - Health
+swagger: "2.0"

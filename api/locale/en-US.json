@@ -1,0 +1,13 @@
+{
+  "test_msg": {
+    "one": "test {{.item}} message",
+    "other": "test {{.item}} {{.item2}} messages"
+  },
+  "server_err": "server internal error",
+  "resp_fail": "failed to process request",
+  "resp_done": "process done successfully",
+  "create_done": "item created successfully",
+  "not_found": "record not found",
+  "unprocessable": "unprocessable entity",
+  "item_exist": "item already exists"
+}
